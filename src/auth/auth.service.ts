@@ -1,6 +1,6 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, QueryFailedError } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User, Role } from '../users/user.entity';
@@ -23,7 +23,14 @@ export class AuthService {
       password: hashed,
       role: Role.USER,
     });
-    return this.usersRepo.save(user);
+    try {
+      return await this.usersRepo.save(user);
+    } catch (e) {
+      if (e instanceof QueryFailedError && (e as any).errno === 1062) {
+        throw new ConflictException(`Username '${dto.username}' is already taken`);
+      }
+      throw e;
+    }
   }
 
   async login(dto: LoginDto): Promise<{ access_token: string }> {

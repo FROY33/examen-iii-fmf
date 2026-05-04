@@ -10,8 +10,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const config = new DocumentBuilder()
-    .setTitle('Gallery API')
-    .setDescription('Secure REST API with RBAC and Photo Gallery Management')
+    .setTitle('API de Galería')
+    .setDescription('API REST segura con RBAC y Gestión de Galería de Fotos')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

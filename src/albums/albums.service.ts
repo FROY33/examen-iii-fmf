@@ -22,7 +22,8 @@ export class AlbumsService {
   async update(id: number, dto: UpdateAlbumDto) {
     const album = await this.findOne(id);
     Object.assign(album, dto);
-    return this.repo.save(album);
+    await this.repo.save(album);
+    return this.findOne(id);
   }
 
   async remove(id: number) {

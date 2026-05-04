@@ -1,4 +1,4 @@
-import { IsString, MaxLength, IsOptional, IsEnum, IsInt, IsArray } from 'class-validator';
+import { IsString, MaxLength, IsOptional, IsEnum, IsInt, IsArray, IsNotEmpty } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Privacy } from '../photo.entity';
 
@@ -20,6 +20,7 @@ export class CreatePhotoDto {
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   @MaxLength(120)
   Title: string;
 

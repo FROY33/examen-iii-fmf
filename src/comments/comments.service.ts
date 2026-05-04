@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, QueryFailedError } from 'typeorm';
 import { Comment } from './comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -9,8 +9,15 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 export class CommentsService {
   constructor(@InjectRepository(Comment) private repo: Repository<Comment>) {}
 
-  create(dto: CreateCommentDto) {
-    return this.repo.save(this.repo.create({ ...dto, PostDate: dto.PostDate ?? new Date() }));
+  async create(dto: CreateCommentDto) {
+    try {
+      return await this.repo.save(this.repo.create({ ...dto, PostDate: dto.PostDate ?? new Date() }));
+    } catch (e) {
+      if (e instanceof QueryFailedError && (e as any).errno === 1452) {
+        throw new BadRequestException(`Photo ${dto.PhotoID} not found`);
+      }
+      throw e;
+    }
   }
 
   findAll() { return this.repo.find(); }
@@ -24,7 +31,8 @@ export class CommentsService {
   async update(id: number, dto: UpdateCommentDto) {
     const c = await this.findOne(id);
     Object.assign(c, dto);
-    return this.repo.save(c);
+    await this.repo.save(c);
+    return this.findOne(id);
   }
 
   async remove(id: number) {

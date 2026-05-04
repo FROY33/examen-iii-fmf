@@ -22,7 +22,8 @@ export class LocationsService {
   async update(id: number, dto: UpdateLocationDto) {
     const loc = await this.findOne(id);
     Object.assign(loc, dto);
-    return this.repo.save(loc);
+    await this.repo.save(loc);
+    return this.findOne(id);
   }
 
   async remove(id: number) {

@@ -1,6 +1,6 @@
 import {
   Controller, Get, Post, Patch, Delete,
-  Body, Param, ParseIntPipe, UseGuards, Request,
+  Body, Param, ParseIntPipe, UseGuards, Request, HttpCode,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
@@ -11,7 +11,7 @@ import { AssignRoleDto } from './dto/assign-role.dto';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 
-@ApiTags('users')
+@ApiTags('usuarios')
 @ApiBearerAuth()
 @Controller('users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -55,7 +55,8 @@ export class UsersController {
 
   @Delete(':id')
   @Roles('ADMIN')
-  @ApiResponse({ status: 200 })
+  @HttpCode(204)
+  @ApiResponse({ status: 204 })
   @ApiResponse({ status: 401 })
   @ApiResponse({ status: 403 })
   remove(@Param('id', ParseIntPipe) id: number) {

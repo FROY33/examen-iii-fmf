@@ -22,7 +22,8 @@ export class MembersService {
   async update(id: number, dto: UpdateMemberDto) {
     const m = await this.findOne(id);
     Object.assign(m, dto);
-    return this.repo.save(m);
+    await this.repo.save(m);
+    return this.findOne(id);
   }
 
   async remove(id: number) {

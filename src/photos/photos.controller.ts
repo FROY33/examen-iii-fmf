@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe, UseGuards, Request, HttpCode } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { PhotosService } from './photos.service';
@@ -7,7 +7,7 @@ import { UpdatePhotoDto } from './dto/update-photo.dto';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 
-@ApiTags('photos')
+@ApiTags('fotos')
 @ApiBearerAuth()
 @Controller('photos')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -29,6 +29,8 @@ export class PhotosController {
 
   @Delete(':id')
   @Roles('ADMIN')
+  @HttpCode(204)
+  @ApiResponse({ status: 204 })
   @ApiResponse({ status: 403 })
   remove(@Param('id', ParseIntPipe) id: number) { return this.svc.remove(id); }
 }

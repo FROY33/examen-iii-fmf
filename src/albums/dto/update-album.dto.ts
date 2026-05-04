@@ -1,10 +1,11 @@
-import { IsString, MaxLength, IsOptional, IsInt } from 'class-validator';
+import { IsString, MaxLength, IsOptional, IsInt, IsNotEmpty } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateAlbumDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   @MaxLength(120)
   Title?: string;
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe, UseGuards, HttpCode } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { TagsService } from './tags.service';
@@ -7,7 +7,7 @@ import { UpdateTagDto } from './dto/update-tag.dto';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 
-@ApiTags('tags')
+@ApiTags('etiquetas')
 @ApiBearerAuth()
 @Controller('tags')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -29,6 +29,8 @@ export class TagsController {
 
   @Delete(':id')
   @Roles('ADMIN')
+  @HttpCode(204)
+  @ApiResponse({ status: 204 })
   @ApiResponse({ status: 403 })
   remove(@Param('id', ParseIntPipe) id: number) { return this.svc.remove(id); }
 }

@@ -26,7 +26,8 @@ export class TagsService {
   async update(id: number, dto: UpdateTagDto) {
     const tag = await this.findOne(id);
     Object.assign(tag, dto);
-    return this.repo.save(tag);
+    await this.repo.save(tag);
+    return this.findOne(id);
   }
 
   async remove(id: number) {

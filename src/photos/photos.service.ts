@@ -43,7 +43,8 @@ export class PhotosService {
     if (tagIds !== undefined) {
       photo.tags = tagIds.length ? await this.tagsRepo.findByIds(tagIds) : [];
     }
-    return this.repo.save(photo);
+    await this.repo.save(photo);
+    return this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
